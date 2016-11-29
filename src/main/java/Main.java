@@ -5,17 +5,28 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Main main = new Main();
-        LinkedHashMap<String, ArrayList<Integer>> map = main.loopOne(main.loadInDoc("Input/Cycles_Input.txt"));
+        LinkedHashMap<String, ArrayList<Integer>> map = main.loopOne(main.loadInDoc("Input/Cycles_Output200.txt"));
         main.writeToFileMap(map);
         main.loopTwo(new File("Output_Cycles_no_doubles.txt"));
         main.testAllNodes(new File("Output_Cycles_single_visit.txt"));
     }
 
+    /**
+     * load in node document from resources folder
+     * @param filename
+     * @return
+     * @throws Exception
+     */
     private File loadInDoc(String filename) throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(filename).toURI());
     }
 
+    /**
+     * write output from map to document
+     * @param map
+     * @throws IOException
+     */
     private void writeToFileMap(LinkedHashMap<String, ArrayList<Integer>> map) throws IOException {
 
         File file = new File("Output_Cycles_no_doubles.txt");
@@ -44,6 +55,12 @@ public class Main {
 
     }
 
+    /**
+     *
+     * @param list
+     * @param name
+     * @throws IOException
+     */
     private void writeTofileList(ArrayList<String> list, String name) throws IOException {
         File file = new File(name);
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -57,6 +74,12 @@ public class Main {
         System.out.println("Done");
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     */
     private LinkedHashMap<String, ArrayList<Integer>> loopOne(File file) throws FileNotFoundException {
         LinkedHashMap<String, ArrayList<Integer>> result = new LinkedHashMap();
 
@@ -83,7 +106,11 @@ public class Main {
         return result;
     }
 
-
+    /**
+     *
+     * @param file
+     * @throws IOException
+     */
     private void loopTwo(File file) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
 
@@ -96,6 +123,11 @@ public class Main {
         removeExtraTours(lines);
     }
 
+    /**
+     *
+     * @param lines
+     * @throws IOException
+     */
     private void removeExtraTours(ArrayList<String> lines) throws IOException {
         boolean[] visited = new boolean[2200];
         ArrayList<String> result = new ArrayList<>();
@@ -120,6 +152,11 @@ public class Main {
         writeTofileList(result, "Output_Cycles_single_visit.txt");
     }
 
+    /**
+     *
+     * @param file
+     * @throws FileNotFoundException
+     */
     private void testAllNodes(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         boolean[] visited = new boolean[2200];
