@@ -5,14 +5,17 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Main main = new Main();
-        LinkedHashMap<String, ArrayList<Integer>> map = main.loopOne(main.loadInDoc("Input/Cycles_Output200.txt"));
+        LinkedHashMap<String, ArrayList<Integer>> map = main.loopOne(main.loadInDoc("Input/Cycles_Input.txt"));
         main.writeToFileMap(map);
         main.loopTwo(new File("Output_Cycles_no_doubles.txt"));
-        main.testAllNodes(new File("Output_Cycles_single_visit.txt"));
+        //main.loopThree(new File("Output_Cycles_single_visit.txt"));    //Loop after removing tours
+        main.loopThree(new File("Output_Cycles_no_doubles.txt"));        //loop after removing doubles
+
     }
 
     /**
      * load in node document from resources folder
+     *
      * @param filename
      * @return
      * @throws Exception
@@ -24,6 +27,7 @@ public class Main {
 
     /**
      * write output from map to document
+     *
      * @param map
      * @throws IOException
      */
@@ -56,7 +60,6 @@ public class Main {
     }
 
     /**
-     *
      * @param list
      * @param name
      * @throws IOException
@@ -75,7 +78,6 @@ public class Main {
     }
 
     /**
-     *
      * @param file
      * @return
      * @throws FileNotFoundException
@@ -107,7 +109,6 @@ public class Main {
     }
 
     /**
-     *
      * @param file
      * @throws IOException
      */
@@ -123,8 +124,35 @@ public class Main {
         removeExtraTours(lines);
     }
 
+    private void loopThree(File file) throws IOException {
+        ArrayList<String> rows = new ArrayList<>();
+
+
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            int[] columns = new int[2200];
+            String line = scanner.nextLine();
+            String[] split = (line.trim()).split(" ");
+            for (String s : split) {
+                try {
+                    columns[Integer.parseInt(s) - 1] = 1;
+                } catch (Exception e) {
+                    System.out.println("Error parsing following number: " + s);
+                }
+            }
+
+            rows.add(Arrays.toString(columns));
+        }
+        ArrayList<Integer> notVisited = testAllNodes(new File("Output_Cycles_single_visit.txt"));
+        for (int i : notVisited) {
+            int[] columns = new int[2200];
+            columns[i - 1] = 1;
+            rows.add(Arrays.toString(columns));
+        }
+        writeTofileList(rows, "Output_Cycles_3.txt");
+    }
+
     /**
-     *
      * @param lines
      * @throws IOException
      */
@@ -153,12 +181,12 @@ public class Main {
     }
 
     /**
-     *
      * @param file
      * @throws FileNotFoundException
      */
-    private void testAllNodes(File file) throws FileNotFoundException {
+    private ArrayList<Integer> testAllNodes(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
+        ArrayList<Integer> notvisited = new ArrayList<>();
         boolean[] visited = new boolean[2200];
 
         while (scanner.hasNextLine()) {
@@ -174,9 +202,11 @@ public class Main {
             if (visited[i]) {
                 counter++;
             } else {
+                notvisited.add(i + 1);
                 System.out.println("Following node is not visited: " + (i + 1));
             }
         }
         System.out.println("Number of visited nodes: " + counter);
+        return notvisited;
     }
 }
